@@ -9,14 +9,23 @@ import pandas as pd
 import datetime as dt
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
-excel = r"C:\Users\ip00517\Downloads\Book1.xlsx"
+excel = r"C:\Users\Administrator\Downloads\Book 1 1.xlsx"
 df = pd.read_excel(excel)
 
-df['Start Date'] = pd.to_datetime(df['Start Date'],format = "%d/%m/%Y")
+column_map = {'Duration (Days)': "Duration", 'People': 'Persons'}
+df = df.rename(columns=column_map)
+
+
+print(df.columns)
+
+
+df['Start Date'] = pd.to_datetime(df['Start Date'],format = "%m/%d/%Y")
 df['End Date'] = pd.to_datetime(df['End Date'],format = "%m/%d/%Y")
-df['Duration'] = df['Duration'].str.replace(" days", "", regex=False).astype(int)
+#df['Persons'] = df['Persons'].astype(str).apply(lambda x: x.split('/'))
 df['Task Duration'] = df['End Date'] - df['Start Date'] + pd.Timedelta(days = 1)
-person_colours = {'A':'g','B':'r','C':'b', 'D':'y', 'E':'pink', 'F':'#8B4513', 'G':'#4B0082', 'H':'#FFDAB9', 'I':'#708090'}
+person_colours = {'Dan/Ivan':'#FFBF01', 'Bastian/Samuel':'#CE99FF', 'Lucas/Dan/Marko':'#CCEBFF', 'Samuel/Bastian/Dan/Ivan':'#4CACC5', 'Lucas/ Dan/ Marko/ Samuel/ Bastian/ Ivan':'#FF0103'}
+
+print(df['Persons'].tail())
 
 fig, ax = plt.subplots()
 ax.xaxis_date()
@@ -42,6 +51,7 @@ ax.set_xlabel('Date')
 ax.set_ylabel('Task')
 ax.set_xlim(df['Start Date'].min(),df['End Date'].max())
 ax.tick_params(axis = 'x', labelrotation = 45)
-ax.legend(handles=patches,  labels=person_colours.keys(), fontsize=11,bbox_to_anchor = (1,0.56))
+ax.legend(handles=patches,  labels=person_colours.keys(), fontsize=11,bbox_to_anchor = (1,0.5))
 
+plt.subplots_adjust(left=0.3, right=0.95, top=0.95, bottom=0.2)
 plt.show()
